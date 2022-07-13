@@ -252,8 +252,7 @@ public extension PanModalPresentationController {
      Transition the PanModalPresentationController
      to the given presentation state
      */
-    func transition(to state: PresentationState) {
-
+    func transition(to state: PresentationState, completion: (() -> ())? = nil) {
         guard presentable?.shouldTransition(to: state) == true
             else { return }
 
@@ -261,9 +260,9 @@ public extension PanModalPresentationController {
 
         switch state {
         case .shortForm:
-            snap(toYPosition: shortFormYPosition)
+            snap(toYPosition: shortFormYPosition, completion: completion)
         case .longForm:
-            snap(toYPosition: longFormYPosition)
+            snap(toYPosition: longFormYPosition, completion: completion)
         }
     }
 
@@ -285,16 +284,12 @@ public extension PanModalPresentationController {
         guard let _ = presentable?.panScrollable
             else { return }
 
-        print("BEGIN UPDATES")
-        
         // Pause scroll observer
         scrollObserver?.invalidate()
         scrollObserver = nil
     }
     
     func endUpdates() {
-        print("END UPDATES")
-        
         guard let scrollView = presentable?.panScrollable
             else { return }
         
@@ -653,12 +648,14 @@ private extension PanModalPresentationController {
         return (abs(velocity) - (1000 * (1 - Constants.snapMovementSensitivity))) > 0
     }
 
-    func snap(toYPosition yPos: CGFloat) {
+    func snap(toYPosition yPos: CGFloat,
+              completion: (() -> ())? = nil) {
         PanModalAnimator.animate({ [weak self] in
             self?.adjust(toYPosition: yPos)
             self?.isPresentedViewAnimating = true
         }, config: presentable) { [weak self] didComplete in
             self?.isPresentedViewAnimating = !didComplete
+            completion?()
         }
     }
 
@@ -777,7 +774,6 @@ private extension PanModalPresentationController {
      Halts the scroll of a given scroll view & anchors it at the `scrollViewYOffset`
      */
     func haltScrolling(_ scrollView: UIScrollView) {
-        print("HaltScrolling - \(scrollObserver)")
         scrollView.setContentOffset(CGPoint(x: 0, y: scrollViewYOffset), animated: false)
         scrollView.showsVerticalScrollIndicator = false
     }
