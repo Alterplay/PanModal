@@ -725,6 +725,10 @@ private extension PanModalPresentationController {
      which allows us to seamlessly transition scrolling from the panContainerView to the scrollView
      */
     func didPanOnScrollView(_ scrollView: UIScrollView, change: NSKeyValueObservedChange<CGPoint>) {
+        guard let _ = scrollObserver else {
+            print("NO OBSERVER!!!!")
+            return
+        }
 
         guard
             !presentedViewController.isBeingDismissed,
