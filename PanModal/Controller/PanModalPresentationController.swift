@@ -316,7 +316,10 @@ public extension PanModalPresentationController {
         observe(scrollView: presentable?.panScrollable)
         configureScrollViewInsets()
     }
-
+    
+    func setNeedsRefreshLayout() {
+        adjustPresentedViewFrame()
+    }
 }
 
 // MARK: - Presented View Layout Configuration

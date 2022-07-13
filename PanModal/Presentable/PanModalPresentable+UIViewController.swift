@@ -39,6 +39,13 @@ public extension PanModalPresentable where Self: UIViewController {
     func panModalSetNeedsLayoutUpdate() {
         presentedVC?.setNeedsLayoutUpdate()
     }
+    
+    /*
+     Recalculate container frame
+     */
+    func panModalSetNeedsRefreshLayout() {
+        presentedVC?.setNeedsRefreshLayout()
+    }
 
     /**
      Operations on the scroll view, such as content height changes, or when inserting/deleting rows can cause the pan modal to jump,
