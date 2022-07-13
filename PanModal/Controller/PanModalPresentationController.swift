@@ -285,12 +285,16 @@ public extension PanModalPresentationController {
         guard let _ = presentable?.panScrollable
             else { return }
 
+        print("BEGIN UPDATES")
+        
         // Pause scroll observer
         scrollObserver?.invalidate()
         scrollObserver = nil
     }
     
     func endUpdates() {
+        print("END UPDATES")
+        
         guard let scrollView = presentable?.panScrollable
             else { return }
         
@@ -766,6 +770,7 @@ private extension PanModalPresentationController {
      Halts the scroll of a given scroll view & anchors it at the `scrollViewYOffset`
      */
     func haltScrolling(_ scrollView: UIScrollView) {
+        print("HaltScrolling")
         scrollView.setContentOffset(CGPoint(x: 0, y: scrollViewYOffset), animated: false)
         scrollView.showsVerticalScrollIndicator = false
     }
