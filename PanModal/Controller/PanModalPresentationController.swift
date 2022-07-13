@@ -311,12 +311,15 @@ public extension PanModalPresentationController {
      pan modal presentable value changes after the initial presentation
      */
     func setNeedsLayoutUpdate() {
-        configureViewLayout()
-        adjustPresentedViewFrame()
+        setNeedsRefreshLayout()
         observe(scrollView: presentable?.panScrollable)
         configureScrollViewInsets()
     }
-
+    
+    func setNeedsRefreshLayout() {
+        configureViewLayout()
+        adjustPresentedViewFrame()
+    }
 }
 
 // MARK: - Presented View Layout Configuration
