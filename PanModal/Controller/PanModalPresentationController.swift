@@ -276,17 +276,24 @@ public extension PanModalPresentationController {
      with scroll observation temporarily disabled.
      */
     func performUpdates(_ updates: () -> Void) {
-
-        guard let scrollView = presentable?.panScrollable
+        beginUpdates()
+        updates()
+        endUpdates()
+    }
+    
+    func beginUpdates() {
+        guard let _ = presentable?.panScrollable
             else { return }
 
         // Pause scroll observer
         scrollObserver?.invalidate()
         scrollObserver = nil
-
-        // Perform updates
-        updates()
-
+    }
+    
+    func endUpdates() {
+        guard let scrollView = presentable?.panScrollable
+            else { return }
+        
         // Resume scroll observer
         trackScrolling(scrollView)
         observe(scrollView: scrollView)

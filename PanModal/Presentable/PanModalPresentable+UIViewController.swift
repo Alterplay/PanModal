@@ -49,6 +49,14 @@ public extension PanModalPresentable where Self: UIViewController {
     func panModalPerformUpdates(_ updates: () -> Void) {
         presentedVC?.performUpdates(updates)
     }
+    
+    func panModalBeginUpdates() {
+        presentedVC?.beginUpdates()
+    }
+    
+    func panModalEndUpdates() {
+        presentedVC?.endUpdates()
+    }
 
     /**
      A function wrapper over the animate function in PanModalAnimator.
