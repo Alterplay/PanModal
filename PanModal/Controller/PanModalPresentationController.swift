@@ -43,6 +43,8 @@ open class PanModalPresentationController: UIPresentationController {
     }
 
     // MARK: - Properties
+    
+    private var isScrollViewUpdating = false
 
     /**
      A flag to track if the presented view is animating
@@ -274,28 +276,35 @@ public extension PanModalPresentationController {
      To avoid this, you can call this method to perform scroll view updates,
      with scroll observation temporarily disabled.
      */
-    func performUpdates(_ updates: () -> Void) {
-        beginUpdates()
+    func performScrollViewUpdates(_ updates: () -> Void) {
+        beginScrollViewUpdates()
         updates()
-        endUpdates()
+        endScrollViewUpdates()
     }
     
-    func beginUpdates() {
-        guard let _ = presentable?.panScrollable
-            else { return }
-
+    func beginScrollViewUpdates() {
+        guard let _ = presentable?.panScrollable else {
+            isScrollViewUpdating = false
+            return
+        }
+        
         // Pause scroll observer
+        isScrollViewUpdating = true
         scrollObserver?.invalidate()
         scrollObserver = nil
     }
     
-    func endUpdates() {
-        guard let scrollView = presentable?.panScrollable
-            else { return }
+    func endScrollViewUpdates() {
+        guard let scrollView = presentable?.panScrollable else {
+            isScrollViewUpdating = false
+            return
+        }
         
         // Resume scroll observer
+        isScrollViewUpdating = false
         trackScrolling(scrollView)
         observe(scrollView: scrollView)
+        
     }
 
     /**
@@ -306,14 +315,10 @@ public extension PanModalPresentationController {
      pan modal presentable value changes after the initial presentation
      */
     func setNeedsLayoutUpdate() {
-        setNeedsRefreshLayout()
-        observe(scrollView: presentable?.panScrollable)
-        configureScrollViewInsets()
-    }
-    
-    func setNeedsRefreshLayout() {
         configureViewLayout()
         adjustPresentedViewFrame()
+        observe(scrollView: presentable?.panScrollable)
+        configureScrollViewInsets()
     }
 }
 
@@ -702,6 +707,9 @@ private extension PanModalPresentationController {
      This allows us to track scrolling without overriding the scrollView delegate
      */
     func observe(scrollView: UIScrollView?) {
+        if isScrollViewUpdating {
+            return
+        }
         scrollObserver?.invalidate()
         scrollObserver = scrollView?.observe(\.contentOffset, options: .old) { [weak self] scrollView, change in
 
@@ -726,7 +734,6 @@ private extension PanModalPresentationController {
      */
     func didPanOnScrollView(_ scrollView: UIScrollView, change: NSKeyValueObservedChange<CGPoint>) {
         guard let _ = scrollObserver else {
-            print("NO OBSERVER!!!!")
             return
         }
 
