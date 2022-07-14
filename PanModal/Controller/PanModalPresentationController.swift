@@ -303,8 +303,9 @@ public extension PanModalPresentationController {
         // Resume scroll observer
         isScrollViewUpdating = false
         trackScrolling(scrollView)
-        observe(scrollView: scrollView)
-        
+        DispatchQueue.main.async { [weak self] in
+            self?.observe(scrollView: scrollView)
+        }
     }
 
     /**
