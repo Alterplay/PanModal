@@ -25,7 +25,7 @@ extension UIViewController: PanModalPresenter {
      a strong reference to this view controller and in turn, creating a memory leak.
      */
     public var isPanModalPresented: Bool {
-        return (transitioningDelegate as? PanModalPresentationDelegate) != nil
+        return false // (transitioningDelegate as? PanModalPresentationDelegate) != nil
     }
 
     /**
@@ -48,6 +48,7 @@ extension UIViewController: PanModalPresenter {
          Here, we deliberately do not check for size classes. More info in `PanModalPresentationDelegate`
          */
 
+        /*
         if UIDevice.current.userInterfaceIdiom == .pad {
             viewControllerToPresent.modalPresentationStyle = .popover
             viewControllerToPresent.popoverPresentationController?.sourceRect = sourceRect
@@ -58,6 +59,11 @@ extension UIViewController: PanModalPresenter {
             viewControllerToPresent.modalPresentationCapturesStatusBarAppearance = true
             viewControllerToPresent.transitioningDelegate = PanModalPresentationDelegate.default
         }
+         */
+        
+        viewControllerToPresent.modalPresentationStyle = .custom
+        viewControllerToPresent.modalPresentationCapturesStatusBarAppearance = true
+        viewControllerToPresent.transitioningDelegate = PanModalPresentationDelegate.default
 
         present(viewControllerToPresent, animated: true, completion: completion)
     }
